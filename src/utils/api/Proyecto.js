@@ -18,9 +18,18 @@ const createProyecto = async (data) => {
     }
 }
 
-const patchProyecto = async (id) => {
+const cambioEstadoProyecto = async (id) => {
     try {
         const response = await clientAxios.patch('/proyecto/'+id);
+        return response;
+    } catch (error) {
+        throw new Error(error.response || error.message);
+    }
+}
+
+const patchProyecto = async (id,data) => {
+    try {
+        const response = await clientAxios.patch('/proyecto/actualizar/'+id,data);
         return response;
     } catch (error) {
         throw new Error(error.response || error.message);
@@ -102,7 +111,8 @@ const deleteConocenos = async (idProyecto,id) => {
 export{
     getProyecto, 
     createProyecto, 
-    patchProyecto, 
+    cambioEstadoProyecto,
+    patchProyecto,
     deleteProyecto, 
     getProyectoById,
     createBeneficio,

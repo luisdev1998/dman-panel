@@ -5,7 +5,7 @@ import Error from "../../common/Error";
 import {
   getProyecto,
   createProyecto,
-  patchProyecto,
+  cambioEstadoProyecto,
   deleteProyecto,
 } from "../../../utils/api/Proyecto";
 
@@ -125,7 +125,7 @@ const Proyectos = () => {
   const estadoProyecto = async (id) => {
     setLoading(true);
     try {
-      const response = await patchProyecto(id);
+      const response = await cambioEstadoProyecto(id);
       if (response.data.success) {
         cargarProyectos();
         setError(null);

@@ -7,6 +7,7 @@ import {
   createBeneficio,
   createConocenos,
   estadoBeneficio,
+  patchProyecto,
   deleteBeneficio,
   estadoConocenos,
   deleteConocenos,
@@ -197,6 +198,35 @@ const ProyectoEditar = () => {
     }
   };
 
+  const editarProyecto = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("titulo", titulo);
+      formData.append("estado_descripcion", estadoDescripcion);
+      formData.append("direccion", direccion);
+      formData.append("metrajes", metrajes);
+      formData.append("descripcion", descripcion);
+      formData.append("video_url", videoUrl);
+      formData.append("mapa_url", mapaUrl);
+      formData.append("imagen_archivo", imagenArchivo);
+      formData.append("banner_archivo", bannerArchivo);
+      formData.append("referencia_archivo", referenciaArchivo);
+      const response = await patchProyecto(id, formData);
+      if (response.data.success) {
+        cargarProyecto(id);
+        setError(null);
+      } else {
+        setError(response.data.message);
+      }
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="grid grid-cols-1  lg:grid-cols-3 lg:gap-4">
       <div className="p-4 rounded bg-gray-50 dark:bg-gray-800">
@@ -208,13 +238,15 @@ const ProyectoEditar = () => {
           >
             <i className="fa-solid fa-caret-left"></i> Regresar
           </button>
+
+          <Error error={error} clase="text-xl"></Error>
         </div>
         <div className="mb-5">
           <label className="self-center text-xl font-bold sm:text-2xl text-gray-700 dark:text-gray-200 break-words">
             {loading ? <Loading></Loading> : titulo}
           </label>
         </div>
-        <form onSubmit={() => {}}>
+        <form onSubmit={editarProyecto}>
           <div className="mb-5">
             <label
               htmlFor="titulo"
@@ -328,37 +360,41 @@ const ProyectoEditar = () => {
               className="block w-full p-4 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             />
           </div>
-          <div className="mb-5">
-            <label
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              htmlFor="imagenArchivo"
-            >
-              Imagen Presentación
-            </label>
-            <input
-              onChange={(e) => setImagenArchivo(e.target.files[0])}
-              ref={imagenArchivoRef}
-              required
-              className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-              id="imagenArchivo"
-              type="file"
-            />
-          </div>
-          <div className="mb-5">
-            <label
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              htmlFor="bannerArchivo"
-            >
-              Banner
-            </label>
-            <input
-              onChange={(e) => setBannerArchivo(e.target.files[0])}
-              ref={bannerArchivoRef}
-              required
-              className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-              id="bannerArchivo"
-              type="file"
-            />
+          <div className="grid grid-cols-2 mb-5 gap-5">
+            <div>
+              <label
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                htmlFor="imagenArchivo"
+              >
+                Imagen Presentación
+              </label>
+              <img src={imagenArchivo} className="w-full h-64" />
+              <input
+                onChange={(e) => setImagenArchivo(e.target.files[0])}
+                ref={imagenArchivoRef}
+                required={false}
+                className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                id="imagenArchivo"
+                type="file"
+              />
+            </div>
+            <div>
+              <label
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                htmlFor="bannerArchivo"
+              >
+                Banner
+              </label>
+              <img src={bannerArchivo} className="w-full h-64" />
+              <input
+                onChange={(e) => setBannerArchivo(e.target.files[0])}
+                ref={bannerArchivoRef}
+                required={false}
+                className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                id="bannerArchivo"
+                type="file"
+              />
+            </div>
           </div>
           <div className="mb-8">
             <label
@@ -367,9 +403,10 @@ const ProyectoEditar = () => {
             >
               Mapa de Referencia
             </label>
+            <img src={referenciaArchivo} className="w-full h-64" />
             <input
               onChange={(e) => setReferenciaArchivo(e.target.files[0])}
-              required
+              required={false}
               ref={referenciaArchivoRef}
               className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
               id="referenciaArchivo"
@@ -388,7 +425,6 @@ const ProyectoEditar = () => {
               </button>
             )}
           </div>
-          <Error error={error} clase="text-xl"></Error>
         </form>
       </div>
       <div className="grid grid-cols-1 gap-4 col-span-2">
