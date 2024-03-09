@@ -22,6 +22,8 @@ const InformacionComponent = () => {
   const [instagram, setInstagram] = useState("");
   const [tiktok, setTiktok] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
+  const [emailRemitente, setEmailRemitente] = useState("");
+  const [claveEmailRemitente, setClaveEmailRemitente] = useState("");
   const [imagen1Archivo, setImagen1Archivo] = useState("");
   const [imagen2Archivo, setImagen2Archivo] = useState("");
   const [imagen3Archivo, setImagen3Archivo] = useState("");
@@ -48,6 +50,8 @@ const InformacionComponent = () => {
       setInstagram(informacion.instagram || "");
       setTiktok(informacion.tiktok || "");
       setWhatsapp(informacion.whatsapp || "");
+      setEmailRemitente(informacion.email_remitente || "");
+      setClaveEmailRemitente(informacion.clave_email_remitente || "");
     }
   }, [informacion]);
 
@@ -107,6 +111,8 @@ const InformacionComponent = () => {
         instagram,
         tiktok,
         whatsapp,
+        emailRemitente,
+        claveEmailRemitente,
       });
       if (response.data.success) {
         setError(null);
@@ -285,7 +291,7 @@ const InformacionComponent = () => {
           </div>
           <div className="mb-5">
             <label
-              htmlFor="tiktok"
+              htmlFor="whatsapp"
               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
             >
               WhatsApp Link
@@ -295,9 +301,45 @@ const InformacionComponent = () => {
               required
               value={whatsapp}
               type="text"
-              id="tiktok"
+              id="whatsapp"
               className="block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             />
+          </div>
+          <div className="mb-5">
+            <div className="flex flex-row gap-5">
+              <div className="w-full">
+                <label
+                  htmlFor="emailRemitente"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Gmail Remitente (Gmail de aviso)
+                </label>
+                <input
+                  onChange={(e) => setEmailRemitente(e.target.value)}
+                  required
+                  value={emailRemitente}
+                  type="text"
+                  id="emailRemitente"
+                  className="block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                />
+              </div>
+              <div className="w-full">
+                <label
+                  htmlFor="claveEmailRemitente"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Clave Remitente (Gmail de aviso)
+                </label>
+                <input
+                  onChange={(e) => setClaveEmailRemitente(e.target.value)}
+                  required
+                  value={claveEmailRemitente}
+                  type="password"
+                  id="claveEmailRemitente"
+                  className="block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                />
+              </div>
+            </div>
           </div>
           {loading ? (
             <Loading></Loading>
