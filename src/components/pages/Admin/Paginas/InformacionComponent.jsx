@@ -24,6 +24,7 @@ const InformacionComponent = () => {
   const [whatsapp, setWhatsapp] = useState("");
   const [emailRemitente, setEmailRemitente] = useState("");
   const [claveEmailRemitente, setClaveEmailRemitente] = useState("");
+  const [emailReceptor, setEmailReceptor] = useState("");
   const [imagen1Archivo, setImagen1Archivo] = useState("");
   const [imagen2Archivo, setImagen2Archivo] = useState("");
   const [imagen3Archivo, setImagen3Archivo] = useState("");
@@ -52,6 +53,7 @@ const InformacionComponent = () => {
       setWhatsapp(informacion.whatsapp || "");
       setEmailRemitente(informacion.email_remitente || "");
       setClaveEmailRemitente(informacion.clave_email_remitente || "");
+      setEmailReceptor(informacion.email_receptor || "");
     }
   }, [informacion]);
 
@@ -113,6 +115,7 @@ const InformacionComponent = () => {
         whatsapp,
         emailRemitente,
         claveEmailRemitente,
+        emailReceptor,
       });
       if (response.data.success) {
         setError(null);
@@ -318,7 +321,7 @@ const InformacionComponent = () => {
                   onChange={(e) => setEmailRemitente(e.target.value)}
                   required
                   value={emailRemitente}
-                  type="text"
+                  type="email"
                   id="emailRemitente"
                   className="block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 />
@@ -340,6 +343,22 @@ const InformacionComponent = () => {
                 />
               </div>
             </div>
+          </div>
+          <div className="mb-5">
+            <label
+              htmlFor="emailReceptor"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >
+              Email Receptor
+            </label>
+            <input
+              onChange={(e) => setEmailReceptor(e.target.value)}
+              required
+              value={emailReceptor}
+              type="email"
+              id="emailReceptor"
+              className="block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            />
           </div>
           {loading ? (
             <Loading></Loading>
