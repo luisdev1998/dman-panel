@@ -11,6 +11,7 @@ import {
   deleteBeneficio,
   estadoConocenos,
   deleteConocenos,
+  patchPositionConocenos,
 } from "../../../utils/api/Proyecto";
 import { useNavigate } from "react-router-dom";
 import { Tooltip } from "flowbite-react";
@@ -47,6 +48,8 @@ const ProyectoEditar = () => {
   const imagenArchivoRef = useRef(null);
   const bannerArchivoRef = useRef(null);
   const referenciaArchivoRef = useRef(null);
+
+  const [draggedItemIdConocenos, setDraggedItemIdConocenos] = useState(null);
 
   useEffect(() => {
     cargarProyecto(id);
@@ -219,6 +222,46 @@ const ProyectoEditar = () => {
         setError(null);
       } else {
         setError(response.data.message);
+      }
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDragStartConocenos = (e, id) => {
+    e.dataTransfer.setData("text/plain", id);
+    setDraggedItemIdConocenos(id);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDropConocenos = async (e, targetId) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const draggedOverItemId = targetId;
+      const draggedItemIndex = conocenos.find(
+        (card) => card.id === draggedItemIdConocenos
+      );
+      const targetItemIndex = conocenos.find(
+        (card) => card.id === draggedOverItemId
+      );
+
+      if (draggedItemIndex.id !== targetItemIndex.id) {
+        const response = await patchPositionConocenos(id, {
+          dragid: draggedItemIndex.id,
+          dropid: targetItemIndex.id,
+        });
+        if (response.data.success) {
+          cargarProyecto(id);
+          setError(null);
+        } else {
+          setError(response.data.message);
+        }
       }
     } catch (error) {
       setError(error.message);
@@ -540,6 +583,8 @@ const ProyectoEditar = () => {
                 <div
                   key={conoceno.id}
                   className="bg-white p-3 border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 text-red-500 text-center flex flex-col gap-3"
+                  onDragOver={handleDragOver}
+                  onDrop={(e) => handleDropConocenos(e, conoceno.id)}
                 >
                   <div>
                     <picture>
@@ -552,6 +597,7 @@ const ProyectoEditar = () => {
                         src={conoceno.imagen_archivo}
                         loading="lazy"
                         alt=""
+                        onDragStart={handleDragOver}
                       />
                     </picture>
                   </div>
@@ -589,6 +635,17 @@ const ProyectoEditar = () => {
                           onClick={() => eliminarConocenos(id, conoceno.id)}
                         >
                           <i className="fa-solid fa-trash text-red-500"></i>
+                        </span>
+                      </Tooltip>
+                      <Tooltip content="Arrastrar">
+                        <span
+                          className="cursor-pointer"
+                          draggable="true"
+                          onDragStart={(e) =>
+                            handleDragStartConocenos(e, conoceno.id)
+                          }
+                        >
+                          <i className="fa-solid fa-arrows-up-down-left-right text-blue-500"></i>
                         </span>
                       </Tooltip>
                     </div>
