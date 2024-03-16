@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { Tooltip } from "flowbite-react";
 import { NavLink } from "react-router-dom";
 import Loading from "../../common/Loading";
 import Error from "../../common/Error";
@@ -7,6 +8,8 @@ import {
   createProyecto,
   cambioEstadoProyecto,
   deleteProyecto,
+  patchPositionProyecto,
+  patchPositionConocenos,
 } from "../../../utils/api/Proyecto";
 
 const Proyectos = () => {
@@ -25,6 +28,8 @@ const Proyectos = () => {
   const [imagenArchivo, setImagenArchivo] = useState("");
   const [bannerArchivo, setBannerArchivo] = useState("");
   const [referenciaArchivo, setReferenciaArchivo] = useState("");
+
+  const [draggedItemIdProyecto, setDraggedItemIdProyecto] = useState(null);
 
   const imagenArchivoRef = useRef(null);
   const bannerArchivoRef = useRef(null);
@@ -131,6 +136,46 @@ const Proyectos = () => {
         setError(null);
       } else {
         setError(response.data.message);
+      }
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDragStartProyecto = (e, id) => {
+    e.dataTransfer.setData("text/plain", id);
+    setDraggedItemIdProyecto(id);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDropProyecto = async (e, targetId) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const draggedOverItemId = targetId;
+      const draggedItemIndex = proyectos.find(
+        (card) => card.id === draggedItemIdProyecto
+      );
+      const targetItemIndex = proyectos.find(
+        (card) => card.id === draggedOverItemId
+      );
+
+      if (draggedItemIndex.id !== targetItemIndex.id) {
+        const response = await patchPositionProyecto({
+          dragid: draggedItemIndex.id,
+          dropid: targetItemIndex.id,
+        });
+        if (response.data.success) {
+          cargarProyectos();
+          setError(null);
+        } else {
+          setError(response.data.message);
+        }
       }
     } catch (error) {
       setError(error.message);
@@ -338,6 +383,8 @@ const Proyectos = () => {
               <div
                 key={proyecto.id}
                 className="bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDropProyecto(e, proyecto.id)}
               >
                 <a href="#">
                   <picture>
@@ -399,9 +446,22 @@ const Proyectos = () => {
                       )}
                       <div
                         onClick={() => eliminarProyecto(proyecto.id)}
-                        className="cursor-pointer mt-5 inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-500 rounded-lg"
+                        className="cursor-pointer mt-5 mr-1 inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-500 rounded-lg"
                       >
                         <i className="fa fa-trash"></i>
+                      </div>
+                      <div className="mt-5 flex items-center">
+                        <Tooltip content="Arrastrar">
+                          <span
+                            className="cursor-pointer"
+                            draggable="true"
+                            onDragStart={(e) =>
+                              handleDragStartProyecto(e, proyecto.id)
+                            }
+                          >
+                            <i className="fa-solid fa-arrows-up-down-left-right text-blue-500"></i>
+                          </span>
+                        </Tooltip>
                       </div>
                     </div>
                   </div>

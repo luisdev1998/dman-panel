@@ -115,6 +115,14 @@ const patchPositionConocenos = async (idProyecto,data) => {
         throw new Error(error.response || error.message);
     }
 }
+const patchPositionProyecto = async (data) => {
+    try {
+        const response = await clientAxios.patch('/proyecto/',data);
+        return response;
+    } catch (error) {
+        throw new Error(error.response || error.message);
+    }
+}
 
 export{
     getProyecto, 
@@ -129,5 +137,6 @@ export{
     deleteBeneficio,
     estadoConocenos,
     deleteConocenos,
-    patchPositionConocenos
+    patchPositionConocenos,
+    patchPositionProyecto
 }
