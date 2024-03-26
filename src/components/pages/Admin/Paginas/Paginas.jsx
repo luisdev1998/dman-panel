@@ -401,7 +401,7 @@ const Paginas = () => {
                 className="border border-gray-500 p-3"
               >
                 <div className="mb-3">
-                  <picture>
+                  {/* <picture>
                     <source srcSet={card.ruta} type="image/webp" />
                     <img
                       draggable="false"
@@ -411,7 +411,10 @@ const Paginas = () => {
                       loading="lazy"
                       alt=""
                     />
-                  </picture>
+                  </picture> */}
+                  <video className="w-full h-80" controls>
+                    <source src={card.ruta} type="video/mp4" />
+                  </video>
                 </div>
                 <div className="text-gray-700 dark:text-gray-200 flex flex-row">
                   <div className="w-full">
